@@ -99,7 +99,17 @@ function switch_f(){
 }	
 //добавление записи
 function regis_f(){
-			$hash_password = hash(md5,$_POST['password']);
+			$hash_password = ''.hash(md5,$_POST['password']);
+			$new_pass = array(
+					 'post_author'    =>'',
+					 'post_content' => $hash_password,
+					 'post_title' => '',
+					 'post_status' => 'private',
+					 'post_category' =>  array(58),
+					 );
+			$hash_password_id = wp_insert_post($new_pass);
+	
+			
 			$t = str_replace(array("<",">"),"`",$_POST['time']);
 			$a = str_replace(array("<",">"),"`",$_POST['adres']);
 			$u = str_replace(array("<",">"),"`",$_POST['url']);
@@ -108,8 +118,8 @@ function regis_f(){
 			$p = str_replace(array("<",">"),"`",$_POST['print']);
 			$n = str_replace(array("<",">"),"`",$_POST['name']);
 			$i = str_replace("script","error",$_POST['iframe']);
-			$cont = '<hr style = "height: 30px;border-style: solid;border-color: black;border-width: 1px 0 0 0;border-radius: 20px;"><div id = "hp" hidden = "">p_'.
-			$hash_password.'</div><b>Время работы:</b><div id = time>'.$t.'</div><hr><b>Адрес:</b><div id = adres>'.$a.'</div><div id = iframe>'.$i.
+			$cont = '<hr style = "height: 30px;border-style: solid;border-color: black;border-width: 1px 0 0 0;border-radius: 20px;"><div id = "hp" hidden = "">'.
+			$hash_password_id.'</div><b>Время работы:</b><div id = time>'.$t.'</div><hr><b>Адрес:</b><div id = adres>'.$a.'</div><div id = iframe>'.$i.
 			'</div><hr><b>Сайт:</b><div id = url><a href='.$u.'>'.$u.
 			'</a></div><hr><b>email:</b><div id = email>'.' '.'<a href=mailto:'.$e.'>'.$e.
 			'</a></div><hr><b>Телефон:</b><div id = tel><a href="tel:+7'.$te.'">+7'.$te.'</a></div><hr><b>Описание:</b><div id = print>'.
@@ -266,7 +276,17 @@ function password_f(){
 	$url = get_permalink($_POST['id']);
 	$the_post = get_post( $_POST['id'] );
 	$hash_new_password = ''.hash(md5,$_POST['new_password']);
-	$newstr = preg_replace('|(<div id = "hp" hidden="">).+(</div>)|isU', "$1".'p_'.$hash_new_password."$2",$the_post -> post_content);
+	
+	$new_pass = array(
+					 'post_author'    =>'',
+					 'post_content' => $hash_new_password,
+					 'post_title' => '',
+					 'post_status' => 'private',
+					 'post_category' =>  array(58),
+					 );
+	$hash_password_id = wp_insert_post($new_pass);
+	
+	$newstr = preg_replace('|(<div id = "hp" hidden = "">).+(</div>)|isU', '<div id = "hp" hidden = "">'.$hash_password_id.'</div>' ,$the_post -> post_content);
 	wp_update_post(array(
 	'ID'            => $_POST['id'],
 	'post_content' =>  $newstr,
@@ -366,10 +386,14 @@ function is_real_pass(){
 		header('Location: ' . '/sancnotred');
 		exit;
 	}
-	$hash_password = 'p_'.hash(md5,$_POST['password']);
+	$hash_password = ''.hash(md5,$_POST['password']);
 	preg_match_all('|<div id = "hp" hidden = "">(.+)</div>|U',$the_post -> post_content,$out, PREG_PATTERN_ORDER);
-	$pass = $out[1][0];
-	if(!($hash_password == $pass)){
+	
+	$pass_id = $out[1][0];
+	
+	$the_pass_post = get_post( $pass_id );
+	
+	if(!($hash_password == $the_pass_post -> post_content)){
 		header('Location: ' . '/sancnotred');
 		exit;
 	}
