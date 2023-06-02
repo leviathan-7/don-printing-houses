@@ -10,10 +10,6 @@ get_header();
 <form class="form" method="POST" action="">
 	<input type="hidden" name="action" value="action_password"/>
 	<ul>
-		<li><label for="password">Ваш пароль:</label></li>
-		<?php get_template_part("pass"); ?>
-		<li><label for="id">ID вашей типографии:</label></li>
-		<li><input required type="number" id="id" name="id" placeholder="0000"></li>
 		<li><label for="password">Ваш новый пароль:</label></li>
 		<li><input required type="password" id="new_password" name="new_password" class="password-input" placeholder="xxxxxx"></li>
 		<li><label><input type="checkbox" class="password-checkbox2"> Показать пароль</label></li>

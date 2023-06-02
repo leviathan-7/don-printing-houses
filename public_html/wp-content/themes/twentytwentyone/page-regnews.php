@@ -10,10 +10,6 @@ get_header();
 <form class="form" method="POST" action="" enctype="multipart/form-data">
 	<input type="hidden" name="action" value="action_news"/>
 	<ul>
-		<li><label for="password">Пароль вашей типографии:</label></li>
-		<?php get_template_part("pass"); ?>
-		<li><label for="id">ID вашей типографии:</label></li>
-		<li><input required type="number" id="id" name="id" placeholder="0000"></li>
 		<li><label for="name">Название новости:</label></li>
 		<li><input required type="text" id="name" name="name" placeholder="Озаглавьте вашу новость"></li>
 		<li><label for="print">Новость:</label></li>

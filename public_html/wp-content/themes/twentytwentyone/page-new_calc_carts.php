@@ -10,10 +10,6 @@ get_header();
 <form class="form" method="POST" action="">
 	<input type="hidden" name="action" value="action_new_calc_carts"/>
 	<ul>
-		<li><label for="password">Ваш пароль:</label></li>
-		<?php get_template_part("pass"); ?>
-		<li><label for="id">ID вашей типографии:</label></li>
-		<li><input required type="number" id="id" name="id" placeholder="0000"></li>
 		<li><label for="cost">Стоимость карты:</label></li>
 		<li><input required type="number" id="cost" name="cost" placeholder="0000"></li>
 		<li><label for="costM">Стоимость магнитной карты:</label></li>

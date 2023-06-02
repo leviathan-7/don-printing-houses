@@ -10,10 +10,6 @@ get_header();
 <form class="form" method="POST" action="">
 	<input type="hidden" name="action" value="action_delete_calculator"/>
 	<ul>
-		<li><label for="password">Ваш пароль:</label></li>
-		<?php get_template_part("pass"); ?>
-		<li><label for="id">ID вашей типографии:</label></li>
-		<li><input required type="number" id="id" name="id" placeholder="0000"></li>
 		
 		<li><input required type="radio" id="c" name="type" value="1">
         <label for="kop">Печать или ксеракопия</label></li>

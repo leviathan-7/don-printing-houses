@@ -10,10 +10,6 @@ get_header();
 <form class="form" method="POST" action="" enctype="multipart/form-data">
 	<input type="hidden" name="action" value="action_photo"/>
 	<ul>
-		<li><label for="password">Ваш пароль:</label></li>
-		<?php get_template_part("pass"); ?>
-		<li><label for="id">ID вашей типографии:</label></li>
-		<li><input required type="number" id="id" name="id" placeholder="0000"></li>
 		<br>
 		<?php get_template_part("fileformwrap"); ?>
 		<li><input  type="submit" id="sub" name="sub" value="Сменить фото"></li>

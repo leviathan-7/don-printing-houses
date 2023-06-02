@@ -94,6 +94,12 @@ function switch_f(){
 		case 'action_results_from_forms':
 			results_from_forms_f();
 			break;
+		case 'action_in':
+			in_f();
+			break;
+		case 'action_out':
+			out_f();
+			break;
 		}
 	}
 }	
@@ -140,43 +146,47 @@ function regis_f(){
 	$attachment_id =media_handle_upload( 'file',0);
 	set_post_thumbnail( $post_id, $attachment_id );
 	$url = get_permalink($post_id);
+	
+	setcookie('log',$post_id,time()+3600*24,'/');
+	setcookie('pass',$hash_password,time()+3600*24,'/');
+	
 			header('Location: ' . '/sanc?post_id=' . $post_id.'&url='.$url);
 			exit;
 }	
 //удаление
 function del_f(){
 	is_real_pass();
-	wp_delete_post($_POST['id']);
-	header('Location: ' . '/sancred');
+	wp_delete_post($_COOKIE['log']);
+	out_f();
 	exit;
 }
 //смена фото
 function photo_f(){
 	is_real_pass();
-	$url = get_permalink($_POST['id']);
+	$url = get_permalink( $_COOKIE['log']);
 	require_once( ABSPATH . 'wp-admin/includes/image.php' );
 	require_once( ABSPATH . 'wp-admin/includes/file.php' );
 	require_once( ABSPATH . 'wp-admin/includes/media.php' );
 	$attachment_id =media_handle_upload( 'file',0);
-	set_post_thumbnail($_POST['id'], $attachment_id );
+	set_post_thumbnail( $_COOKIE['log'], $attachment_id );
 	header('Location: ' . '/sancred?url='.$url);
 	exit;
 }
 //смена меток
 function teg_f(){
 	is_real_pass();
-	$url = get_permalink($_POST['id']);
-	wp_set_post_tags( $_POST['id'], $_POST['tags']);
+	$url = get_permalink( $_COOKIE['log']);
+	wp_set_post_tags(  $_COOKIE['log'], $_POST['tags']);
 	header('Location: ' . '/sancred?url='.$url);
 	exit;
 }
 //смена названия
 function tittle_f(){
 	is_real_pass();
-	$url = get_permalink($_POST['id']);
+	$url = get_permalink( $_COOKIE['log']);
 	$n = str_replace(array("<",">"),"`",$_POST['newname']);
 	wp_update_post(array(
-	'ID'            => $_POST['id'],
+	'ID'            =>  $_COOKIE['log'],
 	'post_title'    => $n,
 	));
 	header('Location: ' . '/sancred?url='.$url);
@@ -185,12 +195,12 @@ function tittle_f(){
 //смена времени работы
 function time_f(){
 	is_real_pass();
-	$url = get_permalink($_POST['id']);
-	$the_post = get_post( $_POST['id'] );
+	$url = get_permalink( $_COOKIE['log']);
+	$the_post = get_post(  $_COOKIE['log'] );
 	$t = str_replace(array("<",">"),"`",$_POST['time']);
 	$newstr = preg_replace('|(<div id = time>).+(</div>)|isU', "$1".' '.$t."$2",$the_post -> post_content);
 	wp_update_post(array(
-	'ID'            => $_POST['id'],
+	'ID'            =>  $_COOKIE['log'],
 	'post_content' =>  $newstr,
 	));
 	header('Location: ' . '/sancred?url='.$url);
@@ -199,14 +209,14 @@ function time_f(){
 //смена категорий и адреса
 function adres_rub_f(){
 	is_real_pass();
-	$url = get_permalink($_POST['id']);
-	$the_post = get_post( $_POST['id'] );
+	$url = get_permalink( $_COOKIE['log']);
+	$the_post = get_post(  $_COOKIE['log'] );
 	$a = str_replace(array("<",">"),"`",$_POST['adres']);
 	$i = str_replace("script","error",$_POST['iframe']);
 	$newstr = preg_replace('|(<div id = adres>).+(</div>)|isU', "$1".' '.$a."$2",$the_post -> post_content);
 	$newstr = preg_replace('|(<div id = iframe>).+(</div>)|isU', "$1".' '.$i."$2",$newstr);
 	wp_update_post(array(
-	'ID'            => $_POST['id'],
+	'ID'            =>  $_COOKIE['log'],
 	'post_content' =>  $newstr,
 	'post_category' =>  array($_POST['type'],$_POST['districts']),
 	));
@@ -216,12 +226,12 @@ function adres_rub_f(){
 //смена сайта
 function url_f(){
 	is_real_pass();
-	$url = get_permalink($_POST['id']);
-	$the_post = get_post( $_POST['id'] );
+	$url = get_permalink( $_COOKIE['log']);
+	$the_post = get_post(  $_COOKIE['log'] );
 	$u = str_replace(array("<",">"),"`",$_POST['url']);
 	$newstr = preg_replace('|(<div id = url>).+(</div>)|isU', "$1".' '.'<a href='.$u.'>'.$u.'</a>'."$2",$the_post -> post_content);
 	wp_update_post(array(
-	'ID'            => $_POST['id'],
+	'ID'            =>  $_COOKIE['log'],
 	'post_content' =>  $newstr,
 	));
 	header('Location: ' . '/sancred?url='.$url);
@@ -230,12 +240,12 @@ function url_f(){
 //смена email
 function email_f(){
 	is_real_pass();
-	$url = get_permalink($_POST['id']);
-	$the_post = get_post( $_POST['id'] );
+	$url = get_permalink( $_COOKIE['log']);
+	$the_post = get_post(  $_COOKIE['log'] );
 	$e = str_replace(array("<",">"),"`",$_POST['email']);
 	$newstr = preg_replace('|(<div id = email>).+(</div>)|isU', "$1".' '.'<a href=mailto:'.$e.'>'.$e.'</a>'."$2",$the_post -> post_content);
 	wp_update_post(array(
-	'ID'            => $_POST['id'],
+	'ID'            =>  $_COOKIE['log'],
 	'post_content' =>  $newstr,
 	));
 	header('Location: ' . '/sancred?url='.$url);
@@ -244,12 +254,12 @@ function email_f(){
 //смена телефона
 function tel_f(){
 	is_real_pass();
-	$url = get_permalink($_POST['id']);
-	$the_post = get_post( $_POST['id'] );
+	$url = get_permalink( $_COOKIE['log']);
+	$the_post = get_post(  $_COOKIE['log'] );
 	$te = str_replace(array("<",">"),"`",$_POST['tel']);
 	$newstr = preg_replace('|(<div id = tel>).+(</div>)|isU', "$1".' '.'<a href="tel:+7'.$te.'">+7'.$te.'</a>'."$2",$the_post -> post_content);
 	wp_update_post(array(
-	'ID'            => $_POST['id'],
+	'ID'            =>  $_COOKIE['log'],
 	'post_content' =>  $newstr,
 	));
 	header('Location: ' . '/sancred?url='.$url);
@@ -258,12 +268,12 @@ function tel_f(){
 //смена контента
 function print_f(){
 	is_real_pass();
-	$url = get_permalink($_POST['id']);
-	$the_post = get_post( $_POST['id'] );
+	$url = get_permalink( $_COOKIE['log']);
+	$the_post = get_post(  $_COOKIE['log'] );
 	$p = str_replace(array("<",">"),"`",$_POST['print']);
 	$newstr = preg_replace('|(<div id = print>).+(</div>)|isU', "$1".' '.$p."$2",$the_post -> post_content);
 	wp_update_post(array(
-	'ID'            => $_POST['id'],
+	'ID'            =>  $_COOKIE['log'],
 	'post_excerpt'  => $p,
 	'post_content' =>  $newstr,
 	));
@@ -273,8 +283,8 @@ function print_f(){
 //смена пароля
 function password_f(){
 	is_real_pass();
-	$url = get_permalink($_POST['id']);
-	$the_post = get_post( $_POST['id'] );
+	$url = get_permalink( $_COOKIE['log']);
+	$the_post = get_post(  $_COOKIE['log'] );
 	$hash_new_password = ''.hash(md5,$_POST['new_password']);
 	
 	$new_pass = array(
@@ -287,8 +297,11 @@ function password_f(){
 	$hash_password_id = wp_insert_post($new_pass);
 	
 	$newstr = preg_replace('|(<div id = "hp" hidden = "">).+(</div>)|isU', '<div id = "hp" hidden = "">'.$hash_password_id.'</div>' ,$the_post -> post_content);
+	
+	setcookie('pass',$hash_new_password,time()+3600*24,'/');
+	
 	wp_update_post(array(
-	'ID'            => $_POST['id'],
+	'ID'            =>  $_COOKIE['log'],
 	'post_content' =>  $newstr,
 	));
 	header('Location: ' . '/sancred?url='.$url);
@@ -297,10 +310,10 @@ function password_f(){
 //создание новости
 function news_f(){
 	is_real_pass();
-	$url = get_permalink($_POST['id']);
+	$url = get_permalink( $_COOKIE['log']);
 	$p = str_replace(array("<",">"),"`",$_POST['print']);
 	$n = str_replace(array("<",">"),"`",$_POST['name']);
-	$hash_password = ''.hash(md5,$_POST['id']);
+	$hash_password = ''.hash(md5, $_COOKIE['log']);
 	$cont = '<hr style = "height: 30px;border-style: solid;border-color: black;border-width: 1px 0 0 0;border-radius: 20px;"><div id = "hp" hidden="">news_'.
 	$hash_password.'</div><b>Текст новости:</b><div id = print>'.$p.'</div><hr><a href='.$url.
 	'><button>Ссылка на типографию</button></a><hr style = "display: block;height: 30px;margin-top: -31px;border-style: solid;border-color: black;border-width: 0 0 1px 0;border-radius: 20px;">';
@@ -380,7 +393,7 @@ function news_photo_f(){
 	exit;
 }
 //проверка пароля
-function is_real_pass(){
+function is_real_pass0(){
 	$the_post = get_post( $_POST['id'] );
 	if(is_null($the_post)){
 		header('Location: ' . '/sancnotred');
@@ -398,6 +411,25 @@ function is_real_pass(){
 		exit;
 	}
 }
+//проверка пароля
+function is_real_pass(){
+	$the_post = get_post( $_COOKIE['log'] );
+	if(is_null($the_post)){
+		header('Location: ' . '/sancnotred');
+		exit;
+	}
+
+	preg_match_all('|<div id = "hp" hidden = "">(.+)</div>|U',$the_post -> post_content,$out, PREG_PATTERN_ORDER);
+	
+	$pass_id = $out[1][0];
+	
+	$the_pass_post = get_post( $pass_id );
+	
+	if(!($_COOKIE['pass'] == $the_pass_post -> post_content)){
+		header('Location: ' . '/sancnotred');
+		exit;
+	}
+}
 //проверка принадлежности новости
 function is_yours_news(){
 	$the_post = get_post( $_POST['id_news'] );
@@ -405,7 +437,7 @@ function is_yours_news(){
 		header('Location: ' . '/sancnotred');
 		exit;
 	}
-	$hash_id = 'news_'.hash(md5,$_POST['id']);
+	$hash_id = 'news_'.hash(md5, $_COOKIE['log']);
 	preg_match_all('|<div id = "hp" hidden="">(.+)</div>|U',$the_post -> post_content,$out, PREG_PATTERN_ORDER);
 	$pass = $out[1][0];
 	if(!($hash_id == $pass)){
@@ -431,8 +463,8 @@ function search_f(){
 //Калькулятор - печать и ксерокопия
 function new_calc_copy_f(){
 	is_real_pass();
-	$url = get_permalink($_POST['id']);
-	$the_post = get_post( $_POST['id'] );
+	$url = get_permalink( $_COOKIE['log']);
+	$the_post = get_post(  $_COOKIE['log'] );
 	$n = str_replace(array("<",">"),"`",$_POST['name']);
 	$t = '<h3>'.$n.'</h3>
 		<input type="number" id="paper_a" placeholder="N = ">
@@ -455,7 +487,7 @@ function new_calc_copy_f(){
 		</script>';
 	$newstr = preg_replace('|(<div id = calc_copy>).*(</div>)|isU', "$1".' '.$t."$2",$the_post -> post_content);
 	wp_update_post(array(
-	'ID'            => $_POST['id'],
+	'ID'            =>  $_COOKIE['log'],
 	'post_content' =>  $newstr,
 	));
 	header('Location: ' . '/sancred?url='.$url);
@@ -464,8 +496,8 @@ function new_calc_copy_f(){
 //Калькулятор афиша и плакат
 function new_calc_afisha_f(){
 	is_real_pass();
-	$url = get_permalink($_POST['id']);
-	$the_post = get_post( $_POST['id'] );
+	$url = get_permalink( $_COOKIE['log']);
+	$the_post = get_post(  $_COOKIE['log'] );
 	$n = str_replace(array("<",">"),"`",$_POST['name']);
 	$t ='<h3>'.$n.'</h3>
 		<input type="number" id="pl_x" placeholder="X мм = ">
@@ -487,7 +519,7 @@ function new_calc_afisha_f(){
 		</script>';
 	$newstr = preg_replace('|(<div id = calc_afisha>).*(</div>)|isU', "$1".' '.$t."$2",$the_post -> post_content);
 	wp_update_post(array(
-	'ID'            => $_POST['id'],
+	'ID'            =>  $_COOKIE['log'],
 	'post_content' =>  $newstr,
 	));
 	header('Location: ' . '/sancred?url='.$url);
@@ -496,8 +528,8 @@ function new_calc_afisha_f(){
 //Калькулятор для пластиковых карт
 function new_calc_carts_f(){
 	is_real_pass();
-	$url = get_permalink($_POST['id']);
-	$the_post = get_post( $_POST['id'] );
+	$url = get_permalink( $_COOKIE['log']);
+	$the_post = get_post(  $_COOKIE['log'] );
 	$t = '
 		<h3>Стоимость N пластиковых карт</h3>
 		<input  type="number" id="cart_a" placeholder="N = ">
@@ -530,7 +562,7 @@ function new_calc_carts_f(){
 ';
 	$newstr = preg_replace('|(<div id = calc_cards>).*(</div>)|isU', "$1".' '.$t."$2",$the_post -> post_content);
 	wp_update_post(array(
-	'ID'            => $_POST['id'],
+	'ID'            =>  $_COOKIE['log'],
 	'post_content' =>  $newstr,
 	));
 	header('Location: ' . '/sancred?url='.$url);
@@ -539,8 +571,8 @@ function new_calc_carts_f(){
 //Калькулятор для пакетов
 function new_calc_pacets_f(){
 	is_real_pass();
-	$url = get_permalink($_POST['id']);
-	$the_post = get_post( $_POST['id'] );
+	$url = get_permalink( $_COOKIE['log']);
+	$the_post = get_post(  $_COOKIE['log'] );
 	$t = '<h3>Стоимость N пакетов</h3>
 		<input type="number" id="pac_a" placeholder="N = ">
 		<button id="pac_b"  class="b1"><b>=</b></button>
@@ -567,7 +599,7 @@ function new_calc_pacets_f(){
 		</script>';
 	$newstr = preg_replace('|(<div id = calc_pacets>).*(</div>)|isU', "$1".' '.$t."$2",$the_post -> post_content);
 	wp_update_post(array(
-	'ID'            => $_POST['id'],
+	'ID'            =>  $_COOKIE['log'],
 	'post_content' =>  $newstr,
 	));
 	header('Location: ' . '/sancred?url='.$url);
@@ -576,8 +608,8 @@ function new_calc_pacets_f(){
 //Удаление калькулятора
 function delete_calculator_f(){
 	is_real_pass();
-	$url = get_permalink($_POST['id']);
-	$the_post = get_post( $_POST['id'] );
+	$url = get_permalink( $_COOKIE['log']);
+	$the_post = get_post(  $_COOKIE['log'] );
 	$newstr = $the_post -> post_content;
 	
 	if($_POST['type'] == 1){
@@ -593,7 +625,7 @@ function delete_calculator_f(){
 		$newstr = preg_replace('|(<div id = calc_pacets>).*(</div>)|isU', "$1".' '."$2",$the_post -> post_content);
 	}
 	wp_update_post(array(
-	'ID'            => $_POST['id'],
+	'ID'            =>  $_COOKIE['log'],
 	'post_content' =>  $newstr,
 	));
 	header('Location: ' . '/sancred?url='.$url);
@@ -603,15 +635,15 @@ function delete_calculator_f(){
 //Добавить продукт
 function new_product_f(){
 	is_real_pass();
-	$url = get_permalink($_POST['id']);
-	$the_post = get_post( $_POST['id'] );
+	$url = get_permalink( $_COOKIE['log']);
+	$the_post = get_post(  $_COOKIE['log'] );
 	$n = str_replace(array("<",">"),"`",$_POST['name']);
 	$c = str_replace(array("<",">"),"`",$_POST['cost']);
 	$p = str_replace(array("<",">"),"`",$_POST['txt']);
 	$t = '<p style="background-color:#71f7ff;border: 1px solid black;max-width:600px"><b id = name>'.$n.'</b><b> ➔ </b><b id = cost style="background-color:orange">'.$c.'</b> ₽<br><b>Описание: </b><i>'.$p.'</i></p>';
 	$newstr = preg_replace('|(<div id = new_product>).*(</div>)|isU', ''.$t.'<div id = new_product></div>',$the_post -> post_content);
 	wp_update_post(array(
-	'ID'            => $_POST['id'],
+	'ID'            =>  $_COOKIE['log'],
 	'post_content' =>  $newstr,
 	));
 	header('Location: ' . '/sancred?url='.$url);
@@ -620,14 +652,14 @@ function new_product_f(){
 //Сменить цену у продукта
 function red_product_f(){
 	is_real_pass();
-	$url = get_permalink($_POST['id']);
-	$the_post = get_post( $_POST['id'] );
+	$url = get_permalink( $_COOKIE['log']);
+	$the_post = get_post(  $_COOKIE['log'] );
 	$n = str_replace(array("<",">"),"`",$_POST['name']);
 	$c = str_replace(array("<",">"),"`",$_POST['cost']);
 	$t = '<p style="background-color:#71f7ff;border: 1px solid black;max-width:600px"><b id = name>'.$n.'</b><b> ➔ </b><b id = cost style="background-color:orange">';	
 	$newstr = preg_replace('|('.$t.').*(</b>)|isU', "$1".' '.$c."$2",$the_post -> post_content);
 	wp_update_post(array(
-	'ID'            => $_POST['id'],
+	'ID'            =>  $_COOKIE['log'],
 	'post_content' =>  $newstr,
 	));
 	header('Location: ' . '/sancred?url='.$url);
@@ -636,13 +668,13 @@ function red_product_f(){
 //Удалить продукт
 function del_product_f(){
 	is_real_pass();
-	$url = get_permalink($_POST['id']);
-	$the_post = get_post( $_POST['id'] );
+	$url = get_permalink( $_COOKIE['log']);
+	$the_post = get_post(  $_COOKIE['log'] );
 	$n = str_replace(array("<",">"),"`",$_POST['name']);
 	$t = '<p style="background-color:#71f7ff;border: 1px solid black;max-width:600px"><b id = name>'.$n.'</b>';
 	$newstr = preg_replace('|('.$t.').*(</p>)|isU', '',$the_post -> post_content);
 	wp_update_post(array(
-	'ID'            => $_POST['id'],
+	'ID'            =>  $_COOKIE['log'],
 	'post_content' =>  $newstr,
 	));
 	header('Location: ' . '/sancred?url='.$url);
@@ -652,8 +684,8 @@ function del_product_f(){
 //Добавить второе фото
 function new_second_photo_f(){
 	is_real_pass();
-	$url = get_permalink($_POST['id']);
-	$the_post = get_post( $_POST['id'] );
+	$url = get_permalink( $_COOKIE['log']);
+	$the_post = get_post(  $_COOKIE['log'] );
 	
 	require_once( ABSPATH . 'wp-admin/includes/image.php' );
 	require_once( ABSPATH . 'wp-admin/includes/file.php' );
@@ -666,7 +698,7 @@ function new_second_photo_f(){
 <img src="'.$s.'" alt="" width=80% height=80% /></p>';
 	$newstr = preg_replace('|(<div id = second_photo>).*(</div>)|isU', "$1".' '.$t."$2",$the_post -> post_content);
 	wp_update_post(array(
-	'ID'            => $_POST['id'],
+	'ID'            =>  $_COOKIE['log'],
 	'post_content' =>  $newstr,
 	));
 	header('Location: ' . '/sancred?url='.$url);
@@ -675,11 +707,11 @@ function new_second_photo_f(){
 //Удалить второе фото
 function del_second_photo_f(){
 	is_real_pass();
-	$url = get_permalink($_POST['id']);
-	$the_post = get_post( $_POST['id'] );
+	$url = get_permalink( $_COOKIE['log']);
+	$the_post = get_post(  $_COOKIE['log'] );
 	$newstr = preg_replace('|(<div id = second_photo>).*(</div>)|isU', "$1".' '."$2",$the_post -> post_content);
 	wp_update_post(array(
-	'ID'            => $_POST['id'],
+	'ID'            =>  $_COOKIE['log'],
 	'post_content' =>  $newstr,
 	));
 	header('Location: ' . '/sancred?url='.$url);
@@ -703,6 +735,23 @@ function results_from_forms_f(){
 	exit;
 }
 
+//вход
+function in_f(){
+	is_real_pass0();
+	$pass = ''.hash(md5,$_POST['password']);
+	$log = $_POST['id'];
+	setcookie('log',$log,time()+3600*24,'/');
+	setcookie('pass',$pass,time()+3600*24,'/');
+	header('Location: ' . '/admin');
+	exit;
+}
+//выход
+function out_f(){
+	setcookie('log','',time(),'/');
+	setcookie('pass','',time(),'/');
+	header('Location: ' . '/admin');
+	exit;
+}
 
 //инициализация плагина
 add_action('init','switch_f');

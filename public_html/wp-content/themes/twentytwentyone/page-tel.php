@@ -10,10 +10,6 @@ get_header();
 <form class="form" method="POST" action="">
 	<input type="hidden" name="action" value="action_tel"/>
 	<ul>
-		<li><label for="password">Ваш пароль:</label></li>
-		<?php get_template_part("pass"); ?>
-		<li><label for="id">ID вашей типографии:</label></li>
-		<li><input required type="number" id="id" name="id" placeholder="0000"></li>
 		<li><label for="tel">Телефон в формате +7**********:</label></li>
 		<li><span style = " font-size: 30px;">+7</span><input style = "width: 232px;" pattern="[0-9]{10}" required type="text" id="tel" name="tel" placeholder="0000000000"></li>
 		<br>

@@ -10,10 +10,6 @@ get_header();
 <form class="form" method="POST" action="">
 	<input type="hidden" name="action" value="action_adres_rub"/>
 	<ul>
-		<li><label for="password">Ваш пароль:</label></li>
-		<?php get_template_part("pass"); ?>
-		<li><label for="id">ID вашей типографии:</label></li>
-		<li><input required type="number" id="id" name="id" placeholder="0000"></li>
 		<?php get_template_part("adresdist"); ?>
 		<li><label >Адрес(улица, номер дома):</label></li>
 		<li><textarea required id="adres" placeholder="ул. Типографская, д. 1" name="adres"></textarea></li>

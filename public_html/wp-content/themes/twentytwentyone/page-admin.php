@@ -13,7 +13,29 @@ get_header();
 	$c2_color = '#fab2a3';
 ?>
 <div style="margin-left:2%;margin-right:2%;">
-	<div style>
+    <?php
+        $bb = false;
+	    if(isset($_COOKIE['log'])){
+	       $bb = true;
+          echo 'Добро пожаловать ID = '.$_COOKIE['log'];
+        }else{
+          echo 'Вы НЕ вошли!';
+        }
+    ?>
+	<div  >
+	    <ul <?php  if($bb){ echo 'hidden'; }    ?>>
+	        <li><a href='<?php bloginfo('siteurl'); ?>/in/' rel='bookmark'>
+				<button onmouseover='this.style.backgroundColor="<?php echo $c1_color ?>";' onmouseout='this.style.backgroundColor="<?php echo $c2_color ?>";' style="<?php echo $b_style ?>">
+				Войти
+				</button></a>
+			</li>
+			<li><a href='<?php bloginfo('siteurl'); ?>/reg/' rel='bookmark'>
+				<button onmouseover='this.style.backgroundColor="<?php echo $c1_color ?>";' onmouseout='this.style.backgroundColor="<?php echo $c2_color ?>";' style="<?php echo $b_style ?>">
+				Регистрация
+				</button></a>
+			</li>
+		</ul>
+		<div <?php  if(!$bb){ echo 'hidden'; }    ?>>
 		<b style ="background: #E4E3DF;">Редактор новостей: &nbsp</b>
 		<ul>
 			<li><a href='<?php bloginfo('siteurl'); ?>/regnews/' rel='bookmark'>
@@ -47,9 +69,9 @@ get_header();
 		<br>
 		<b style ="background: #E4E3DF;">Редактор типографий: &nbsp</b>
 		<ul>
-			<li><a href='<?php bloginfo('siteurl'); ?>/reg/' rel='bookmark'>
+			<li><a href='<?php bloginfo('siteurl'); ?>/out/' rel='bookmark'>
 				<button onmouseover='this.style.backgroundColor="<?php echo $c1_color ?>";' onmouseout='this.style.backgroundColor="<?php echo $c2_color ?>";' style="<?php echo $b_style ?>">
-				Регистрация
+				Выйти
 				</button></a>
 			</li>
 			<li><a href='<?php bloginfo('siteurl'); ?>/del/' rel='bookmark'>
@@ -132,7 +154,8 @@ get_header();
 				 Удалить фото продукции
 				</button></a>
 			</li>
-		</ul>	
+		</ul>
+		</div>
 	</div>
 	<br>
 	<hr>

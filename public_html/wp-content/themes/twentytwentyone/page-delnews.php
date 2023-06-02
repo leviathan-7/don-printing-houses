@@ -9,10 +9,6 @@ get_header();
 <form class="form" method="POST" action="">
 	<input type="hidden" name="action" value="action_delnews"/>
 	<ul>
-		<li><label for="password">Ваш пароль:</label></li>
-		<?php get_template_part("pass"); ?>
-		<li><label for="id">ID вашей типографии:</label></li>
-		<li><input required type="number" id="id" name="id" placeholder="0000"></li>
 		<li><label for="id_news">ID вашей новости:</label></li>
 		<li><input required type="number" id="id_news" name="id_news" placeholder="0000"></li>
         <br>
